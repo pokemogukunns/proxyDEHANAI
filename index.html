@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head><script type="text/javascript">(function() {
+        if (window.XMLHttpRequest) {
+          function parseURI(url) {
+            var m = String(url).replace(/^\s+|\s+$/g, "").match(/^([^:\/?#]+:)?(\/\/(?:[^:@]*(?::[^:@]*)?@)?(([^:\/?#]*)(?::(\d*))?))?([^?#]*)(\?[^#]*)?(#[\s\S]*)?/);
+            // authority = "//" + user + ":" + pass "@" + hostname + ":" port
+            return (m ? {
+              href : m[0] || "",
+              protocol : m[1] || "",
+              authority: m[2] || "",
+              host : m[3] || "",
+              hostname : m[4] || "",
+              port : m[5] || "",
+              pathname : m[6] || "",
+              search : m[7] || "",
+              hash : m[8] || ""
+            } : null);
+          }
+          function rel2abs(base, href) { // RFC 3986
+            function removeDotSegments(input) {
+              var output = [];
+              input.replace(/^(\.\.?(\/|$))+/, "")
+                .replace(/\/(\.(\/|$))+/g, "/")
+                .replace(/\/\.\.$/, "/../")
+                .replace(/\/?[^\/]*/g, function (p) {
+                  if (p === "/..") {
+                    output.pop();
+                  } else {
+                    output.push(p);
+                  }
+                });
+              return output.join("").replace(/^\//, input.charAt(0) === "/" ? "/" : "");
+            }
+            href = parseURI(href || "");
+            base = parseURI(base || "");
+            return !href || !base ? null : (href.protocol || base.protocol) +
+            (href.protocol || href.authority ? href.authority : base.authority) +
+            removeDotSegments(href.protocol || href.authority || href.pathname.charAt(0) === "/" ? href.pathname : (href.pathname ? ((base.authority & !base.pathname ? "/" : "") + base.pathname.slice(0, base.pathname.lastIndexOf("/") + 1) + href.pathname) : base.pathname)) +
+            (href.protocol || href.authority || href.pathname ? href.search : (href.search || base.search)) +
+            href.hash;
+          }
+          var proxied = window.XMLHttpRequest.prototype.open;
+          window.XMLHttpRequest.prototype.open = function() {
+              if (arguments[1] !== null & arguments[1] !== undefined) {
+                var url = arguments[1];
+                url = rel2abs("https://example.net/", url);
+                if (url.indexOf("https://www.zerotoone.com.br/wp-content/plugins/super-links/application/helpers/super-links-proxy.php?") == -1) {
+                  url = "https://www.zerotoone.com.br/wp-content/plugins/super-links/application/helpers/super-links-proxy.php?" + url;
+                }
+                arguments[1] = url;
+              }
+              return proxied.apply(this, [].slice.call(arguments));
+          };
+        }
+      })();</script>
+    <title>Example Domain</title>
+ 
+    <meta charset="utf-8">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+    body {
+        background-color: #f0f0f2;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        
+    }
+    div {
+        width: 600px;
+        margin: 5em auto;
+        padding: 2em;
+        background-color: #fdfdff;
+        border-radius: 0.5em;
+        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);
+    }
+    a:link, a:visited {
+        color: #38488f;
+        text-decoration: none;
+    }
+    @media (max-width: 700px) {
+        div {
+            margin: 0 auto;
+            width: auto;
+        }
+    }
+    </style>    
+</head>
+ 
+<body><script type="text/javascript" src="https://ad.netowl.jp/js/star-php.js"></script>
+<div>
+    <h1>Example Domain</h1>
+    <p>This domain is for use in illustrative examples in documents. You may use this
+    domain in literature without prior coordination or asking for permission.</p>
+    <p><a href="https://www.zerotoone.com.br/wp-content/plugins/super-links/application/helpers/super-links-proxy.php?https://www.iana.org/domains/example">More information...</a></p>
+</div>
+</body>
+</html>
+ 
